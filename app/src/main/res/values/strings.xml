@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">SoundMeterPL</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign up</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="retry_password">Retry password</string>
+    <string name="email">Email</string>
+    <string name="measure">Measure</string>
+    <string name="logout">Logout</string>
+    <string name="new_password">New password</string>
+    <string name="enter">Enter</string>
+</resources>

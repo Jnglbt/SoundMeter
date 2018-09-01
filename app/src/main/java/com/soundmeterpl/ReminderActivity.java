@@ -1,0 +1,15 @@
+package com.soundmeterpl;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class ReminderActivity extends Activity
+{
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_reminder);
+    }
+}
