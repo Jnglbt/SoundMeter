@@ -11,4 +11,7 @@
     <string name="logout">Logout</string>
     <string name="new_password">New password</string>
     <string name="enter">Enter</string>
+    <string name="default_info_snippet">Snippet</string>
+    <string name="default_info_title">Title</string>
+    <string name="pick_place">Pick place</string>
 </resources>
