@@ -1,9 +1,11 @@
 package com.soundmeterpl;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -36,6 +38,7 @@ import com.google.android.gms.tasks.Task;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
     private static final String TAG = MainActivity.class.getSimpleName();
+
     private GoogleMap mMap;
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String[] mLikelyPlaceAddresses;
     private String[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -80,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
 
+
         Button login = (Button) findViewById(R.id.login_bttn);
         login.setOnClickListener(new View.OnClickListener()
 
@@ -101,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(new Intent(MainActivity.this, SignupActivity.class));
             }
         });
+
+
     }
 
     @Override
@@ -169,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onComplete(@NonNull Task<Location> task)
                     {
-                        if (task.isSuccessful())
+                         if (task.isSuccessful() && task.getResult() != null)
                         {
                             mLastKnownLocation = task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -315,6 +323,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e("Exception: %s", e.getMessage());
         }
     }
+
+
+
 }
 
 
