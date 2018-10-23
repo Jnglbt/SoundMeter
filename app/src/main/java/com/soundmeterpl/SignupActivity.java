@@ -1,124 +1,135 @@
 package com.soundmeterpl;
 
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
-public class SignupActivity extends AppCompatActivity
+
+public class SignupActivity extends AppCompatActivity implements View.OnClickListener
 {
-    private SQLiteDatabase sqLiteDatabase;
-    private EditText Login, Email, Password, RePassword;
+    //private SQLiteDatabase sqLiteDatabase;
+    private EditText  Email, Password, RePassword;
+    private Button btn_signup;
+    private ProgressDialog progressDialog;
+
+    private FirebaseAuth firebaseAuth;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        HelperDB helperDB = new HelperDB(this);
-        sqLiteDatabase = helperDB.getWritableDatabase();
 
-        Button _enterBtn = (Button) findViewById(R.id.btn_enter);
+        firebaseAuth = FirebaseAuth.getInstance();
 
-        _enterBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                switch (view.getId())
-                {
-                    case R.id.btn_enter:
-                        if (!checkField())
-                        {
-                            Toast.makeText(getApplicationContext(), "Fill all fields", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(HelperDB.COLUMN_LOGIN, Login.getText().toString());
-                            contentValues.put(HelperDB.COLUMN_EMAIL, Email.getText().toString());
-                            contentValues.put(HelperDB.COLUMN_PASSWORD, Password.getText().toString());
 
-                            Bundle extras = getIntent().getExtras();
-                            if (extras != null)
-                            {
-                                if (extras.containsKey("id"));
-                                {
-                                    long id = extras.getLong("id");
-                                    getContentResolver().update(ContentUris.withAppendedId(MyProvider.URI_CONTENT,
-                                            id), contentValues, null, null);
-                                }
-                            }
+        Email = (EditText) findViewById(R.id.Email);
+        Password = (EditText) findViewById(R.id.passwordLogin);
+        RePassword = (EditText) findViewById(R.id.RePassword);
+
+        btn_signup = (Button) findViewById(R.id.btn_signup);
+
+        btn_signup.setOnClickListener(this);
+
+        progressDialog = new ProgressDialog(this);
+
+
+
+    }
+
+    private void registerUser(){
+
+        String email = Email.getText().toString().trim();
+        String password = Password.getText().toString().trim();
+        String repassword = RePassword.getText().toString().trim();
+
+        //TODO - validation
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(this,"Please enter email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(password)){
+            Toast.makeText(this,"Please enter Password", Toast.LENGTH_SHORT).show();
+            return;
+
+        }
+        if(password.length() < 6){
+            Toast.makeText(this,"Please enter more then 6 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(repassword)){
+            Toast.makeText(this,"Please enter rePassword", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!password.equals(repassword)){
+            Toast.makeText(this,"Second Password not similar", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        progressDialog.setMessage("Registering User... Please wait.");
+        progressDialog.show();
+
+        firebaseAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+
+                            Toast.makeText(SignupActivity.this, "Registration complite", Toast.LENGTH_SHORT).show();
+
+                        }else{
+                            if (task.getException() instanceof FirebaseApiNotAvailableException)
+                                Toast.makeText(SignupActivity.this, "You are already registered", Toast.LENGTH_SHORT).show();
                             else
-                            {
-                                getContentResolver().insert(MyProvider.URI_CONTENT, contentValues);
-                            }
-                            finish();
+                                Toast.makeText(SignupActivity.this, "Could not registered", Toast.LENGTH_SHORT).show();
                         }
-                        break;
-                }
-            }
+                        progressDialog.hide();
+                    }
+
+
         });
 
-        Login = (EditText) findViewById(R.id.input_login);
-        Email = (EditText) findViewById(R.id.input_email);
-        Password = (EditText) findViewById(R.id.input_password);
-        RePassword = (EditText) findViewById(R.id.input_rePassword);
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null)
-        {
-            if (extras.containsKey("id"))
-            {
-                long id = extras.getLong("id");
-
-                Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(MyProvider.URI_CONTENT,
-                        id), null, null, null, null);
-
-                cursor.moveToFirst();
-
-                int indexLogin = cursor.getColumnIndexOrThrow(HelperDB.COLUMN_LOGIN);
-                int indexEmail = cursor.getColumnIndexOrThrow(HelperDB.COLUMN_EMAIL);
-                int indexPassword = cursor.getColumnIndexOrThrow(HelperDB.COLUMN_PASSWORD);
-
-                String login = cursor.getString(indexLogin);
-                String email = cursor.getString(indexEmail);
-                String password = cursor.getString(indexPassword);
-
-                Login.setText(login);
-                Email.setText(email);
-                Password.setText(password);
+    }
+    public void goToLoginActivity(){
+        btn_signup.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent( SignupActivity.this, LoginActivity.class));
             }
+        });
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
+        if(v == btn_signup){
+            registerUser();
+            startActivity(new Intent( SignupActivity.this, LoginActivity.class));
         }
     }
 
-    private boolean checkField()
-    {
-        if (Login.getText().toString().equals("") ||
-                Email.getText().toString().equals("") ||
-                Password.getText().toString().equals("") ||
-                RePassword.getText().toString().equals("") ||
-                Password.getText().toString().equals(RePassword.getText().toString()))
-        {
-            return false;
-        }
-        try
-        {
-            Integer.parseInt(Login.getText().toString());
-            Integer.parseInt(Email.getText().toString());
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
-        return true;
-    }
+
+
+
+
+
+
+
+
 }

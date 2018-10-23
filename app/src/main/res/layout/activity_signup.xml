@@ -7,92 +7,41 @@
     tools:context=".SignupActivity">
 
     <TextView
-        android:id="@+id/rtpText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/retry_password"
-        app:layout_constraintBottom_toTopOf="@+id/input_rePassword"
-        app:layout_constraintStart_toStartOf="@+id/input_rePassword" />
-
-    <TextView
-        android:id="@+id/lgnText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login"
-        app:layout_constraintBottom_toTopOf="@+id/input_login"
-        app:layout_constraintStart_toStartOf="@+id/input_login" />
-
-    <TextView
-        android:id="@+id/emlText"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/email"
-        app:layout_constraintBottom_toTopOf="@+id/input_email"
-        app:layout_constraintStart_toStartOf="@+id/input_email" />
+        app:layout_constraintBottom_toTopOf="@+id/Email"
+        app:layout_constraintStart_toStartOf="@+id/Email" />
+
+    <TextView
+        android:id="@+id/rtpText"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/retry_password"
+        app:layout_constraintBottom_toTopOf="@+id/RePassword"
+        app:layout_constraintStart_toStartOf="@+id/RePassword" />
 
     <TextView
         android:id="@+id/psdText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="@string/password"
-        app:layout_constraintBottom_toTopOf="@+id/input_password"
-        app:layout_constraintStart_toStartOf="@+id/input_password" />
+        app:layout_constraintBottom_toTopOf="@+id/passwordLogin"
+        app:layout_constraintStart_toStartOf="@+id/passwordLogin" />
 
     <EditText
-        android:id="@+id/input_login"
+        android:id="@+id/Email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.171" />
-
-    <EditText
-        android:id="@+id/input_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/input_login"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/input_login"
-        app:layout_constraintTop_toBottomOf="@+id/input_login" />
-
-    <EditText
-        android:id="@+id/input_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/input_email"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/input_email"
-        app:layout_constraintTop_toBottomOf="@+id/input_email" />
-
-    <EditText
-        android:id="@+id/input_rePassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/input_password"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/input_password"
-        app:layout_constraintTop_toBottomOf="@+id/input_password" />
+        app:layout_constraintVertical_bias="0.376" />
 
     <Button
         android:id="@+id/btn_signup"
@@ -102,7 +51,33 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/sign_up"
-        app:layout_constraintEnd_toEndOf="@+id/input_rePassword"
-        app:layout_constraintStart_toStartOf="@+id/input_rePassword"
-        app:layout_constraintTop_toBottomOf="@+id/input_rePassword" />
+        app:layout_constraintEnd_toEndOf="@+id/RePassword"
+        app:layout_constraintStart_toStartOf="@+id/RePassword"
+        app:layout_constraintTop_toBottomOf="@+id/RePassword" />
+
+    <EditText
+        android:id="@+id/passwordLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/Email"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/Email"
+        app:layout_constraintTop_toBottomOf="@+id/Email" />
+
+    <EditText
+        android:id="@+id/RePassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/passwordLogin"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/passwordLogin"
+        app:layout_constraintTop_toBottomOf="@+id/passwordLogin" />
 </android.support.constraint.ConstraintLayout>

@@ -14,5 +14,6 @@
     <string name="default_info_snippet">Snippet</string>
     <string name="default_info_title">Title</string>
     <string name="pick_place">Pick place</string>
+    <string name="msg_switch_network">Please, switch on gps</string>
 
 </resources>

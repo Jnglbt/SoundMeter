@@ -26,12 +26,12 @@
             android:text="@string/measure" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/buttonLogout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:gravity="end"
-            android:text="@string/logout"
-            android:clickable="true"/>
+            android:text="@string/logout" />
     </LinearLayout>
 
 </LinearLayout>

@@ -34,11 +34,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
     private static final String TAG = MainActivity.class.getSimpleName();
-
+    
     private GoogleMap mMap;
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
@@ -60,12 +61,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
-
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        /*if(firebaseAuth.getCurrentUser() != null){
+            finish();
+            startActivities(new Intent(this, MainActivity.class));
+        }*/
 
         if (savedInstanceState != null)
         {
@@ -110,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
+    private void startActivities(Intent intent) {
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
