@@ -41,7 +41,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         RePassword = (EditText) findViewById(R.id.RePassword);
 
         btn_signup = (Button) findViewById(R.id.btn_signup);
-
         btn_signup.setOnClickListener(this);
 
         progressDialog = new ProgressDialog(this);
@@ -89,8 +88,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-
-                            Toast.makeText(SignupActivity.this, "Registration complite", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, "Registration complete", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent( SignupActivity.this, LoginActivity.class));
 
                         }else{
                             if (task.getException() instanceof FirebaseApiNotAvailableException)
@@ -105,22 +104,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         });
 
     }
-    public void goToLoginActivity(){
-        btn_signup.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent( SignupActivity.this, LoginActivity.class));
-            }
-        });
-    }
-
-
     @Override
     public void onClick(View v) {
-
         if(v == btn_signup){
             registerUser();
-            startActivity(new Intent( SignupActivity.this, LoginActivity.class));
         }
     }
 

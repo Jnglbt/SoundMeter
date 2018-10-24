@@ -26,14 +26,6 @@ public class Main2Activity extends FragmentActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main2);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
-        /*if(firebaseAuth.getCurrentUser() != null){
-            finish();
-            startActivities(new Intent(this, Main2Activity.class));
-        }*/
-
-        //FirebaseAuth user = firebaseAuth.getCurrentUser();
-
         buttonLogout = (TextView) findViewById(R.id.buttonLogout);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_maps);

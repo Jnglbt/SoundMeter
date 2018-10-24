@@ -36,11 +36,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         firebaseAuth = firebaseAuth.getInstance();
 
-        /*if(firebaseAuth.getCurrentUser() != null){
-            finish();
-            startActivities(new Intent(getApplicationContext(), Main2Activity.class));
-        }*/
-
         editTextEmail = (EditText) findViewById(R.id.emailLogin);
         editTextPassword = (EditText) findViewById(R.id.passwordLogin);
 
@@ -62,7 +57,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         if(v == buttonSingIn) {
             userLogin();
-
         }
         if(v == signUp){
             startActivity(new Intent(this, SignupActivity.class));
@@ -95,20 +89,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if(task.isSuccessful()){
-                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(new Intent(
-                                    LoginActivity.this, Main2Activity.class
-                            ));
+                            Toast.makeText(LoginActivity.this, "Authentication complete", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         }else{
                             Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-
-
-
-    private void startActivities(Intent intent) {
-    }
-
 }
