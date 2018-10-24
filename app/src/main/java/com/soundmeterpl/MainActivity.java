@@ -68,11 +68,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         super.onCreate(savedInstanceState);
 
-        /*if(firebaseAuth.getCurrentUser() != null){
-            finish();
-            startActivities(new Intent(this, MainActivity.class));
-        }*/
-
         if (savedInstanceState != null)
         {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -116,10 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
-
-    private void startActivities(Intent intent) {
-    }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
