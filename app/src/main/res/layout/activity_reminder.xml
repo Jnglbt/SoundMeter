@@ -11,11 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/email"
-        app:layout_constraintBottom_toTopOf="@+id/editText7"
-        app:layout_constraintStart_toStartOf="@+id/editText7" />
+        app:layout_constraintBottom_toTopOf="@+id/ReminderTextLabel"
+        app:layout_constraintStart_toStartOf="@+id/ReminderTextLabel" />
 
     <EditText
-        android:id="@+id/editText7"
+        android:id="@+id/ReminderTextLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -32,15 +32,15 @@
         app:layout_constraintVertical_bias="0.458" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/ReminderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:text="@string/enter"
-        app:layout_constraintEnd_toEndOf="@+id/editText7"
+        app:layout_constraintEnd_toEndOf="@+id/ReminderTextLabel"
         app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="@+id/editText7"
-        app:layout_constraintTop_toBottomOf="@+id/editText7" />
+        app:layout_constraintStart_toStartOf="@+id/ReminderTextLabel"
+        app:layout_constraintTop_toBottomOf="@+id/ReminderTextLabel" />
 </android.support.constraint.ConstraintLayout>
