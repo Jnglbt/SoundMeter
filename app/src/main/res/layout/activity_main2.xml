@@ -7,11 +7,13 @@
     tools:context=".Main2Activity"
     android:orientation="vertical">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
+
+    <fragment
+        android:id="@+id/fragment_maps"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        class="com.google.android.gms.maps.SupportMapFragment"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +22,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/measureButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/measure" />
