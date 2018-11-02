@@ -36,10 +36,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Main2Activity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener
 {
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+
+
     private TextView buttonLogout;
     private Button  buttonMeasure;
 
@@ -74,6 +78,7 @@ public class Main2Activity extends AppCompatActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
 
         firebaseAuth = firebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
 
         if (savedInstanceState != null)
         {
@@ -101,6 +106,7 @@ public class Main2Activity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v)
             {
+                FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(Main2Activity.this, MainActivity.class));
             }
         });
