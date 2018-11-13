@@ -1,4 +1,4 @@
-package com.soundmeterpl;
+package com.soundmeterpl.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -21,9 +21,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.soundmeterpl.R;
+import com.soundmeterpl.adapters.MyMediaRecorder;
+import com.soundmeterpl.utils.InfoDialog;
+import com.soundmeterpl.utils.Meter;
+import com.soundmeterpl.utils.Util;
+import com.soundmeterpl.utils.World;
+
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class MeasureActivity extends Activity
@@ -165,7 +171,7 @@ public class MeasureActivity extends Activity
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(MeasureActivity.this, Main2Activity.class));
+                startActivity(new Intent(MeasureActivity.this, MainActivity.class));
             }
         });
     }

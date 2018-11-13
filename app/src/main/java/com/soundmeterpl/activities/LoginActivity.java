@@ -1,4 +1,4 @@
-package com.soundmeterpl;
+package com.soundmeterpl.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +18,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.soundmeterpl.R;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {
     private Button buttonSingIn;
     private EditText editTextEmail, editTextPassword;
     private TextView signUp, forgotPassword;
+
+    private LinearLayout vert;
+    private LinearLayout hor;
 
     private ProgressDialog progressDialog;
 
@@ -34,12 +39,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        firebaseAuth = firebaseAuth.getInstance();
+        hor = (LinearLayout) findViewById(R.id.hor_layout);
+        vert = (LinearLayout) findViewById(R.id.vert_layout);
 
-        /*if(firebaseAuth.getCurrentUser() != null){
-            finish();
-            startActivities(new Intent(getApplicationContext(), Main2Activity.class));
-        }*/
+        firebaseAuth = firebaseAuth.getInstance();
 
         editTextEmail = (EditText) findViewById(R.id.emailLogin);
         editTextPassword = (EditText) findViewById(R.id.passwordLogin);
@@ -59,29 +62,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     @Override
-    public void onClick(View v) {
-        if(v == buttonSingIn) {
+    public void onClick(View v)
+    {
+        if (v == buttonSingIn)
+        {
             userLogin();
 
         }
-        if(v == signUp){
+        if (v == signUp)
+        {
             startActivity(new Intent(this, SignupActivity.class));
         }
-        if(v == forgotPassword){
+        if (v == forgotPassword)
+        {
             startActivity(new Intent(this, ReminderActivity.class));
         }
     }
 
-    private void userLogin(){
+    private void userLogin()
+    {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(this,"Please enter email", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(email))
+        {
+            Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(password)){
-            Toast.makeText(this,"Please enter Password", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(password))
+        {
+            Toast.makeText(this, "Please enter Password", Toast.LENGTH_SHORT).show();
             return;
 
         }
@@ -89,23 +99,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progressDialog.setMessage("Login User... Please wait.");
         progressDialog.show();
 
-        firebaseAuth.signInWithEmailAndPassword(email,password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
+                {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
                         progressDialog.dismiss();
-                        if(task.isSuccessful()){
-                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        if (task.isSuccessful())
+                        {
                             startActivity(new Intent(
-                                    LoginActivity.this, Main2Activity.class
+                                    LoginActivity.this, MainActivity.class
                             ));
-                        }else{
+                        } else
+                        {
                             Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-
 
 
 }

@@ -1,11 +1,9 @@
-package com.soundmeterpl;
+package com.soundmeterpl.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -36,27 +36,34 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.soundmeterpl.R;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
-    private static final String TAG = MainActivity.class.getSimpleName();
-    
+    private TextView buttonLogout;
+    private Button buttonMeasure;
+    private Button login;
+    private Button signup;
+    private LinearLayout vert;
+    private LinearLayout hor;
+
     private GoogleMap mMap;
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private CameraPosition mCameraPosition;
+    private Location mLastKnownLocation;
 
+    private boolean mLocationPermissionGranted;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
-
-    private Location mLastKnownLocation;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-
     private static final int M_MAX_ENTRIES = 5;
+
     private String[] mLikelyPlaceNames;
     private String[] mLikelyPlaceAddresses;
     private String[] mLikelyPlaceAttributions;
@@ -65,25 +72,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        hor = (LinearLayout) findViewById(R.id.hor_layout);
+        vert = (LinearLayout) findViewById(R.id.vert_layout);
 
         firebaseAuth = firebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+
+
+        if (firebaseUser != null)
+        {
+            hor.setVisibility(View.GONE);
+            vert.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            hor.setVisibility(View.VISIBLE);
+            vert.setVisibility(View.GONE);
+        }
 
         if (savedInstanceState != null)
         {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-
-        if(firebaseUser != null){
-            startActivity(new Intent(MainActivity.this, Main2Activity.class));
-        }
-
-        setContentView(R.layout.activity_main);
 
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
@@ -95,8 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
 
-
-        Button login = (Button) findViewById(R.id.login_bttn);
+        login = (Button) findViewById(R.id.login_bttn);
         login.setOnClickListener(new View.OnClickListener()
 
         {
@@ -107,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        Button signup = (Button) findViewById(R.id.signup_bttn);
+        signup = (Button) findViewById(R.id.signup_bttn);
         signup.setOnClickListener(new View.OnClickListener()
 
         {
@@ -115,6 +130,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v)
             {
                 startActivity(new Intent(MainActivity.this, SignupActivity.class));
+            }
+        });
+
+        buttonLogout = (TextView) findViewById(R.id.buttonLogout);
+        buttonLogout.setOnClickListener(new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View v)
+            {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(getIntent());
+
+            }
+        });
+
+        buttonMeasure = (Button) findViewById(R.id.measureButton);
+        buttonMeasure.setOnClickListener(new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(MainActivity.this, MeasureActivity.class));
             }
         });
 
@@ -187,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onComplete(@NonNull Task<Location> task)
                     {
-                         if (task.isSuccessful() && task.getResult() != null)
+                        if (task.isSuccessful() && task.getResult() != null)
                         {
                             mLastKnownLocation = task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -214,10 +253,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+        switch (requestCode)
+        {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
+            {
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
                     mLocationPermissionGranted = true;
                 }
             }
@@ -225,26 +267,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         updateLocationUI();
     }
 
-    private void showCurrentPlace() {
-        if (mMap == null) {
+    private void showCurrentPlace()
+    {
+        if (mMap == null)
+        {
             return;
         }
 
-        if (mLocationPermissionGranted) {
-            @SuppressWarnings("MissingPermission") final
-            Task<PlaceLikelihoodBufferResponse> placeResult =
+        if (mLocationPermissionGranted)
+        {
+            @SuppressWarnings("MissingPermission") final Task<PlaceLikelihoodBufferResponse> placeResult =
                     mPlaceDetectionClient.getCurrentPlace(null);
             placeResult.addOnCompleteListener
-                    (new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
+                    (new OnCompleteListener<PlaceLikelihoodBufferResponse>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
+                        public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task)
+                        {
+                            if (task.isSuccessful() && task.getResult() != null)
+                            {
                                 PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
 
                                 int count;
-                                if (likelyPlaces.getCount() < M_MAX_ENTRIES) {
+                                if (likelyPlaces.getCount() < M_MAX_ENTRIES)
+                                {
                                     count = likelyPlaces.getCount();
-                                } else {
+                                } else
+                                {
                                     count = M_MAX_ENTRIES;
                                 }
 
@@ -254,7 +303,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 mLikelyPlaceAttributions = new String[count];
                                 mLikelyPlaceLatLngs = new LatLng[count];
 
-                                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                                for (PlaceLikelihood placeLikelihood : likelyPlaces)
+                                {
                                     mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
                                     mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace()
                                             .getAddress();
@@ -263,7 +313,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
 
                                     i++;
-                                    if (i > (count - 1)) {
+                                    if (i > (count - 1))
+                                    {
                                         break;
                                     }
                                 }
@@ -272,12 +323,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 openPlacesDialog();
 
-                            } else {
+                            } else
+                            {
                                 Log.e(TAG, "Exception: %s", task.getException());
                             }
                         }
                     });
-        } else {
+        } else
+        {
             Log.i(TAG, "The user did not grant location permission.");
 
             mMap.addMarker(new MarkerOptions()
@@ -289,13 +342,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void openPlacesDialog() {
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+    private void openPlacesDialog()
+    {
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
                 LatLng markerLatLng = mLikelyPlaceLatLngs[which];
                 String markerSnippet = mLikelyPlaceAddresses[which];
-                if (mLikelyPlaceAttributions[which] != null) {
+                if (mLikelyPlaceAttributions[which] != null)
+                {
                     markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
                 }
 
@@ -315,27 +372,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .show();
     }
 
-    private void updateLocationUI() {
-        if (mMap == null) {
+    private void updateLocationUI()
+    {
+        if (mMap == null)
+        {
             return;
         }
-        try {
-            if (mLocationPermissionGranted) {
+        try
+        {
+            if (mLocationPermissionGranted)
+            {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
+            } else
+            {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e)
+        {
             Log.e("Exception: %s", e.getMessage());
         }
     }
-
-
-
 }
 
 

@@ -1,4 +1,4 @@
-package com.soundmeterpl;
+package com.soundmeterpl.utils;
 
 public class Measure {
     String id;
