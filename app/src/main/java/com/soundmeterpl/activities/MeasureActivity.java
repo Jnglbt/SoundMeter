@@ -257,7 +257,7 @@ public class MeasureActivity extends Activity
     {
         super.onPause();
         bListener = false;
-        mRecorder.delete(); //Stop recording and delete the recording file
+        mRecorder.delete();
         thread = null;
         isChart = false;
     }
