@@ -189,10 +189,10 @@ public class MeasureActivity extends Activity
                     {
                         if (bListener)
                         {
-                            volume = mRecorder.getMaxAmplitude();  //Get the sound pressure value
+                            volume = mRecorder.getMaxAmplitude();
                             if (volume > 0 && volume < 1000000)
                             {
-                                World.setDbCount(20 * (float) (Math.log10(volume)));  //Change the sound pressure value to the decibel value
+                                World.setDbCount(20 * (float) (Math.log10(volume)));
                                 // Update with thread
                                 Message message = new Message();
                                 message.what = 1;
