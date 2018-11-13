@@ -1,7 +1,9 @@
-package com.soundmeterpl;
+package com.soundmeterpl.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.soundmeterpl.R;
 
 public class PassActivity extends Activity
 {
