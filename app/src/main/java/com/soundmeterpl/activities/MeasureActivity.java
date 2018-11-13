@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,9 +22,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.soundmeterpl.R;
 import com.soundmeterpl.adapters.MyMediaRecorder;
 import com.soundmeterpl.utils.InfoDialog;
+import com.soundmeterpl.utils.Measure;
 import com.soundmeterpl.utils.Meter;
 import com.soundmeterpl.utils.Util;
 import com.soundmeterpl.utils.World;
@@ -59,6 +64,9 @@ public class MeasureActivity extends Activity
     private static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
 
     private Button  buttonAbort;
+    private Button buttonAdd;
+
+    private DatabaseReference databaseValue;
 
     final Handler handler = new Handler()
     {
@@ -92,6 +100,8 @@ public class MeasureActivity extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        databaseValue = FirebaseDatabase.getInstance().getReference("measure");
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
         {
@@ -171,6 +181,14 @@ public class MeasureActivity extends Activity
             @Override
             public void onClick(View v)
             {
+                startActivity(new Intent(MeasureActivity.this, MainActivity.class));
+            }
+        });
+        buttonAdd = (Button) findViewById(R.id.add_bttn);
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddValue();
                 startActivity(new Intent(MeasureActivity.this, MainActivity.class));
             }
         });
@@ -272,5 +290,19 @@ public class MeasureActivity extends Activity
         }
         mRecorder.delete();
         super.onDestroy();
+    }
+    private void AddValue(){
+        String measureString = curVal.getText().toString().trim();
+        double measureCur = Double.parseDouble(measureString);
+        if(!TextUtils.isEmpty(measureString)){
+            String id = databaseValue.push().getKey();
+            Measure measure = new Measure(id,measureCur);
+            databaseValue.child(id).setValue(measure);
+            Toast.makeText(this, "Measure added", Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(this, "Can't measure", Toast.LENGTH_LONG).show();
+
+        }
+
     }
 }
