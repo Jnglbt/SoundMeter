@@ -48,7 +48,7 @@ public class Meter extends AppCompatImageView
         paint.setTypeface(MeasureActivity.tf);
         paint.setAntiAlias(true);
         paint.setTextAlign(Paint.Align.CENTER);
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.BLACK);
     }
 
     public void refresh()
@@ -72,7 +72,7 @@ public class Meter extends AppCompatImageView
         }
         mMatrix.setRotate(getAngle(World.dbCount), newWidth / 2, newHeight * 215 / 460);
         canvas.drawBitmap(indicatorBitmap, mMatrix, paint);
-        canvas.drawText((int) World.dbCount + " DB", newWidth / 2, newHeight * 36 / 46, paint);
+        canvas.drawText((int) World.dbCount + " dB", newWidth / 2, newHeight * 36 / 46, paint);
     }
 
     private float getAngle(float db)
