@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +39,8 @@ import com.soundmeterpl.utils.World;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.Locale;
+
 
 public class MeasureActivity extends Activity
 {
@@ -67,6 +72,7 @@ public class MeasureActivity extends Activity
     private Button buttonAdd;
 
     private DatabaseReference databaseValue;
+
 
     final Handler handler = new Handler()
     {
@@ -208,10 +214,10 @@ public class MeasureActivity extends Activity
                         if (bListener)
                         {
                             volume = mRecorder.getMaxAmplitude();
-                            if (volume > 0 && volume < 1000000)
+                            if (volume > 0)
                             {
                                 World.setDbCount(20 * (float) (Math.log10(volume)));
-                                // Update with thread
+                                //World.setDbCount(volume);
                                 Message message = new Message();
                                 message.what = 1;
                                 handler.sendMessage(message);
@@ -292,17 +298,20 @@ public class MeasureActivity extends Activity
         super.onDestroy();
     }
     private void AddValue(){
+        Bundle bundle = getIntent().getExtras();
+        double latitude = bundle.getDouble("LATITUDE");
+        double longitude = bundle.getDouble("LONGITUDE");
+
         String measureString = curVal.getText().toString().trim();
         double measureCur = Double.parseDouble(measureString);
         if(!TextUtils.isEmpty(measureString)){
             String id = databaseValue.push().getKey();
-            Measure measure = new Measure(id,measureCur);
+            Measure measure = new Measure(id, measureCur, longitude, latitude);
             databaseValue.child(id).setValue(measure);
             Toast.makeText(this, "Measure added", Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(this, "Can't measure", Toast.LENGTH_LONG).show();
 
         }
-
     }
 }
