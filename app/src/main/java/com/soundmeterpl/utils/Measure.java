@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Measure {
    public String id;
-   public double resultMeasure;
+   public String resultMeasure;
    public double longitude;
    public double latitude;
 
@@ -15,7 +15,7 @@ public class Measure {
 
     }
 
-    public Measure(String id, double resultMeasure, double longitude, double latitude) {
+    public Measure(String id, String resultMeasure, double longitude, double latitude) {
         this.id = id;
         this.resultMeasure = resultMeasure;
         this.longitude = longitude;

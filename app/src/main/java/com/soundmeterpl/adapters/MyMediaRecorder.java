@@ -7,36 +7,46 @@ import java.io.IOException;
 
 public class MyMediaRecorder
 {
-    public File myRecAudioFile ;
-    private MediaRecorder mMediaRecorder ;
-    public boolean isRecording = false ;
+    public File myRecAudioFile;
+    private MediaRecorder mMediaRecorder;
+    public boolean isRecording = false;
 
-    public float getMaxAmplitude() {
-        if (mMediaRecorder != null) {
-            try {
+    public float getMaxAmplitude()
+    {
+        if (mMediaRecorder != null)
+        {
+            try
+            {
                 return mMediaRecorder.getMaxAmplitude();
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e)
+            {
                 e.printStackTrace();
                 return 0;
             }
-        } else {
+        } else
+        {
             return 5;
         }
     }
 
-    public File getMyRecAudioFile() {
+    public File getMyRecAudioFile()
+    {
         return myRecAudioFile;
     }
 
-    public void setMyRecAudioFile(File myRecAudioFile) {
+    public void setMyRecAudioFile(File myRecAudioFile)
+    {
         this.myRecAudioFile = myRecAudioFile;
     }
 
-    public boolean startRecorder(){
-        if (myRecAudioFile == null) {
+    public boolean startRecorder()
+    {
+        if (myRecAudioFile == null)
+        {
             return false;
         }
-        try {
+        try
+        {
             mMediaRecorder = new MediaRecorder();
 
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -48,44 +58,49 @@ public class MyMediaRecorder
             mMediaRecorder.start();
             isRecording = true;
             return true;
-        } catch(IOException exception) {
+        } catch (IOException exception)
+        {
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
-            isRecording = false ;
+            isRecording = false;
             exception.printStackTrace();
-        }catch(IllegalStateException e){
+        } catch (IllegalStateException e)
+        {
             stopRecording();
             e.printStackTrace();
-            isRecording = false ;
+            isRecording = false;
         }
         return false;
     }
 
 
-
-
-    public void stopRecording() {
-        if (mMediaRecorder != null){
-            if(isRecording){
-                try{
+    public void stopRecording()
+    {
+        if (mMediaRecorder != null)
+        {
+            if (isRecording)
+            {
+                try
+                {
                     mMediaRecorder.stop();
                     mMediaRecorder.release();
-                }catch(Exception e){
+                } catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
             mMediaRecorder = null;
-            isRecording = false ;
+            isRecording = false;
         }
     }
 
 
-
-
-    public void delete() {
+    public void delete()
+    {
         stopRecording();
-        if (myRecAudioFile != null) {
+        if (myRecAudioFile != null)
+        {
             myRecAudioFile.delete();
             myRecAudioFile = null;
         }

@@ -54,10 +54,7 @@ public class MeasureActivity extends Activity
     TextView aveVal;
     TextView curVal;
     long currentTime = 0;
-    long savedTime = 0;
     boolean isChart = false;
-    boolean isMoney = false;
-    /* Decibel */
     private boolean bListener = true;
     private boolean isThreadRun = true;
     private Thread thread;
@@ -302,11 +299,11 @@ public class MeasureActivity extends Activity
         double latitude = bundle.getDouble("LATITUDE");
         double longitude = bundle.getDouble("LONGITUDE");
 
-        String measureString = curVal.getText().toString().trim();
-        double measureCur = Double.parseDouble(measureString);
+        String measureString = curVal.getText().toString();
+        String FinMeasureString = measureString.replace(',', '.');
         if(!TextUtils.isEmpty(measureString)){
             String id = databaseValue.push().getKey();
-            Measure measure = new Measure(id, measureCur, longitude, latitude);
+            Measure measure = new Measure(id, FinMeasureString, longitude, latitude);
             databaseValue.child(id).setValue(measure);
             Toast.makeText(this, "Measure added", Toast.LENGTH_LONG).show();
         }else {
