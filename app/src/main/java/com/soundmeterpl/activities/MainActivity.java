@@ -29,6 +29,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -48,6 +50,11 @@ import com.soundmeterpl.utils.Meter;
 
 import java.util.List;
 
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ORANGE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
     private TextView buttonLogout;
@@ -66,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mLastKnownLocation;
     private double latitude;
     private double longitude;
+    private float color = BitmapDescriptorFactory.HUE_CYAN;
 
     private boolean mLocationPermissionGranted;
 
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    private List<Measure>  measureList;
+    private List<Measure> measureList;
 
     private DatabaseReference dbMeasureReference;
 
@@ -93,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //uploadToMap();
-
 
         hor = (LinearLayout) findViewById(R.id.hor_layout);
         vert = (LinearLayout) findViewById(R.id.vert_layout);
@@ -107,8 +113,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
             hor.setVisibility(View.GONE);
             vert.setVisibility(View.VISIBLE);
-        }
-        else
+        } else
         {
             hor.setVisibility(View.VISIBLE);
             vert.setVisibility(View.GONE);
@@ -176,29 +181,51 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 intent.putExtra("LATITUDE", latitude);
                 intent.putExtra("LONGITUDE", longitude);
                 startActivity(intent);
-
             }
         });
-        //dbMeasureReference.addValueEventListener(dbMeasure);
-
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    protected void addMark()
+    {
         dbMeasureReference = FirebaseDatabase.getInstance().getReference("measure");
-
-        dbMeasureReference.addValueEventListener(new ValueEventListener() {
+        dbMeasureReference.addValueEventListener(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren())
+                {
                     Measure measure = childSnapshot.getValue(Measure.class);
 
-                    Log.d(TAG, "Value is: " + measure.latitude + " " + measure.longitude );
+                    float val = Float.valueOf(measure.resultMeasure);
+                    if (val < 40)
+                    {
+                        color = BitmapDescriptorFactory.HUE_GREEN;
+                    }
+                    else if (val >= 40 && val < 75)
+                    {
+                        color = BitmapDescriptorFactory.HUE_CYAN;
+                    }
+                    else if (val >= 75 && val < 125)
+                    {
+                        color = BitmapDescriptorFactory.HUE_ORANGE;
+                    }
+                    else if (val >= 125)
+                    {
+                        color = BitmapDescriptorFactory.HUE_RED;
+                    }
+
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(measure.latitude,
+                            measure.longitude)).title(measure.resultMeasure).icon(
+                            BitmapDescriptorFactory.defaultMarker(color)
+                    ));
+                    Log.d(TAG, "Value is: " + measure.latitude + " " + measure.longitude);
                 }
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
                 Log.d(TAG, "Cant read");
             }
         });
@@ -221,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
-
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter()
         {
             @Override
@@ -238,11 +264,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         getLocationPermission();
-
         updateLocationUI();
-
         getDeviceLocation();
-
+        addMark();
     }
 
     private void getLocationPermission()
@@ -317,111 +341,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         updateLocationUI();
     }
 
-    private void showCurrentPlace()
-    {
-        if (mMap == null)
-        {
-            return;
-        }
-
-        if (mLocationPermissionGranted)
-        {
-            @SuppressWarnings("MissingPermission") final Task<PlaceLikelihoodBufferResponse> placeResult =
-                    mPlaceDetectionClient.getCurrentPlace(null);
-            placeResult.addOnCompleteListener
-                    (new OnCompleteListener<PlaceLikelihoodBufferResponse>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task)
-                        {
-                            if (task.isSuccessful() && task.getResult() != null)
-                            {
-                                PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
-
-                                int count;
-                                if (likelyPlaces.getCount() < M_MAX_ENTRIES)
-                                {
-                                    count = likelyPlaces.getCount();
-                                } else
-                                {
-                                    count = M_MAX_ENTRIES;
-                                }
-
-                                int i = 0;
-                                mLikelyPlaceNames = new String[count];
-                                mLikelyPlaceAddresses = new String[count];
-                                mLikelyPlaceAttributions = new String[count];
-                                mLikelyPlaceLatLngs = new LatLng[count];
-
-                                for (PlaceLikelihood placeLikelihood : likelyPlaces)
-                                {
-                                    mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-                                    mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace()
-                                            .getAddress();
-                                    mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
-                                            .getAttributions();
-                                    mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                                    i++;
-                                    if (i > (count - 1))
-                                    {
-                                        break;
-                                    }
-                                }
-
-                                likelyPlaces.release();
-
-                                openPlacesDialog();
-
-                            } else
-                            {
-                                Log.e(TAG, "Exception: %s", task.getException());
-                            }
-                        }
-                    });
-        } else
-        {
-            Log.i(TAG, "The user did not grant location permission.");
-
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
-
-            getLocationPermission();
-        }
-    }
-
-    private void openPlacesDialog()
-    {
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                String markerSnippet = mLikelyPlaceAddresses[which];
-                if (mLikelyPlaceAttributions[which] != null)
-                {
-                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                }
-
-                mMap.addMarker(new MarkerOptions()
-                        .title(mLikelyPlaceNames[which])
-                        .position(markerLatLng)
-                        .snippet(markerSnippet));
-
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                        DEFAULT_ZOOM));
-            }
-        };
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
-    }
-
     private void updateLocationUI()
     {
         if (mMap == null)
@@ -449,6 +368,3 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 }
-
-
-
