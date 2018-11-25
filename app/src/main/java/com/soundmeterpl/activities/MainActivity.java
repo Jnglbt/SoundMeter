@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -36,7 +37,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.soundmeterpl.R;
+import com.soundmeterpl.utils.Measure;
+import com.soundmeterpl.utils.Meter;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
@@ -52,7 +62,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PlaceDetectionClient mPlaceDetectionClient;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private CameraPosition mCameraPosition;
+
     private Location mLastKnownLocation;
+    private double latitude;
+    private double longitude;
 
     private boolean mLocationPermissionGranted;
 
@@ -72,10 +85,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
+    private List<Measure>  measureList;
+
+    private DatabaseReference dbMeasureReference;
+
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //uploadToMap();
+
 
         hor = (LinearLayout) findViewById(R.id.hor_layout);
         vert = (LinearLayout) findViewById(R.id.vert_layout);
@@ -153,12 +172,39 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(MainActivity.this, MeasureActivity.class));
+                Intent intent = new Intent(MainActivity.this, MeasureActivity.class);
+                intent.putExtra("LATITUDE", latitude);
+                intent.putExtra("LONGITUDE", longitude);
+                startActivity(intent);
+
+            }
+        });
+        //dbMeasureReference.addValueEventListener(dbMeasure);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        dbMeasureReference = FirebaseDatabase.getInstance().getReference("measure");
+
+        dbMeasureReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+                    Measure measure = childSnapshot.getValue(Measure.class);
+
+                    Log.d(TAG, "Value is: " + measure.latitude + " " + measure.longitude );
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "Cant read");
             }
         });
 
-
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
@@ -232,6 +278,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+
+                            latitude = mLastKnownLocation.getLatitude();
+                            longitude = mLastKnownLocation.getLongitude();
                         } else
                         {
                             Log.d(TAG, "Current location is null. Using defaults.");
@@ -396,6 +446,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e("Exception: %s", e.getMessage());
         }
     }
+
+
 }
 
 
