@@ -22,7 +22,6 @@ import com.soundmeterpl.R;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener
 {
-    //private SQLiteDatabase sqLiteDatabase;
     private EditText  Email, Password, RePassword;
     private Button btn_signup;
     private ProgressDialog progressDialog;
@@ -36,18 +35,13 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-
         Email = (EditText) findViewById(R.id.Email);
         Password = (EditText) findViewById(R.id.passwordLogin);
         RePassword = (EditText) findViewById(R.id.RePassword);
 
         btn_signup = (Button) findViewById(R.id.btn_signup);
         btn_signup.setOnClickListener(this);
-
         progressDialog = new ProgressDialog(this);
-
-
-
     }
 
     private void registerUser(){
@@ -56,7 +50,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         String password = Password.getText().toString().trim();
         String repassword = RePassword.getText().toString().trim();
 
-        //TODO - validation
         if(TextUtils.isEmpty(email)){
             Toast.makeText(this,"Please enter email", Toast.LENGTH_SHORT).show();
             return;
@@ -80,7 +73,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-
         progressDialog.setMessage("Registering User... Please wait.");
         progressDialog.show();
 
@@ -103,7 +95,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
 
         });
-
     }
     @Override
     public void onClick(View v) {
@@ -111,13 +102,4 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             registerUser();
         }
     }
-
-
-
-
-
-
-
-
-
 }

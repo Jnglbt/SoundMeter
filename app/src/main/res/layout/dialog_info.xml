@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/bg_dialog"
+        android:background="@color/white"
         android:orientation="vertical" >
 
         <TextView
@@ -18,13 +18,11 @@
             style="@style/text_18_ffffff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="8dp"
             android:text="Info"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textSize="30sp"
+            android:textColor="@color/monsoon"
             android:textStyle="bold" />
 
         <TextView
@@ -32,6 +30,7 @@
             style="@style/text_16_666666"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:gravity="left|center"
             android:lineSpacingMultiplier="1.5"
             android:padding="5dp"
@@ -41,6 +40,7 @@
             style="@style/text_16_666666"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/cyan"
             android:gravity="left|center"
             android:lineSpacingMultiplier="1.5"
             android:padding="5dp"
@@ -50,6 +50,7 @@
             style="@style/text_16_666666"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/cyan"
             android:gravity="left|center"
             android:lineSpacingMultiplier="1.5"
             android:padding="5dp"
@@ -59,6 +60,7 @@
             style="@style/text_16_666666"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/cyan"
             android:gravity="left|center"
             android:lineSpacingMultiplier="1.5"
             android:padding="5dp"
@@ -68,6 +70,7 @@
             style="@style/text_16_666666"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/yellow"
             android:gravity="left|center"
             android:lineSpacingMultiplier="1.5"
             android:padding="5dp"
@@ -77,20 +80,39 @@
             style="@style/text_16_666666"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/yellow"
+            android:gravity="left|center"
+            android:lineSpacingMultiplier="1.5"
+            android:padding="5dp"
+            android:text="@string/info_120db" />
+
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/text_16_666666"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/red"
             android:gravity="left|center"
             android:lineSpacingMultiplier="1.5"
             android:padding="5dp"
             android:text="@string/info_150db" />
+
+        <TextView
+            android:id="@+id/textView4"
+            style="@style/text_16_666666"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:gravity="left|center"
+            android:lineSpacingMultiplier="1.5"
+            android:padding="5dp"
+            android:text="@string/info_160db" />
 
         <Button
             android:id="@+id/negativeButton"
             style="@style/text_15_666666_sdw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:background="@color/mygreen"
             android:gravity="center"
             android:text="Ok"

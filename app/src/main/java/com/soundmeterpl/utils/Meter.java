@@ -10,8 +10,8 @@ import android.graphics.Paint;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-import com.soundmeterpl.activities.MeasureActivity;
 import com.soundmeterpl.R;
+import com.soundmeterpl.activities.MeasureActivity;
 
 public class Meter extends AppCompatImageView
 {
