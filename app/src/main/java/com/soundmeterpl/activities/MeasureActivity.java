@@ -281,9 +281,9 @@ public class MeasureActivity extends AppCompatActivity
             String id = databaseValue.push().getKey();
             Measure measure = new Measure(id, FinMeasureString, longitude, latitude);
             databaseValue.child(id).setValue(measure);
-            Toast.makeText(this, "Measure added", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Pomiar dodano", Toast.LENGTH_LONG).show();
         }else {
-            Toast.makeText(this, "Can't measure", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Nie mogę zmierzyć", Toast.LENGTH_LONG).show();
         }
     }
 }
