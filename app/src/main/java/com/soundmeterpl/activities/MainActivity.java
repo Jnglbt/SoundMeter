@@ -48,14 +48,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.soundmeterpl.R;
 import com.soundmeterpl.utils.Measure;
-import com.soundmeterpl.utils.Meter;
-
-import java.util.List;
-
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ORANGE;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
@@ -86,18 +78,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    private static final int M_MAX_ENTRIES = 5;
-
-    private String[] mLikelyPlaceNames;
-    private String[] mLikelyPlaceAddresses;
-    private String[] mLikelyPlaceAttributions;
-    private LatLng[] mLikelyPlaceLatLngs;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
-
-    private List<Measure> measureList;
-
     private DatabaseReference dbMeasureReference;
 
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -105,8 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         hor = (LinearLayout) findViewById(R.id.hor_layout);
         vert = (LinearLayout) findViewById(R.id.vert_layout);
@@ -115,7 +97,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         firebaseAuth = firebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
             measureButton.setEnabled(false);
             measureButton.setText("Turn on GPS");
         }
@@ -144,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_maps);
         mapFragment.getMapAsync(this);
-
 
         login = (Button) findViewById(R.id.login_bttn);
         login.setOnClickListener(new View.OnClickListener()
@@ -176,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v)
             {
                 FirebaseAuth.getInstance().signOut();
-                startActivity(getIntent());
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
 
             }
         });
@@ -212,25 +194,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (val < 40)
                     {
                         color = BitmapDescriptorFactory.HUE_GREEN;
-                    }
-                    else if (val >= 40 && val < 75)
+                    } else if (val >= 40 && val < 75)
                     {
                         color = BitmapDescriptorFactory.HUE_CYAN;
-                    }
-                    else if (val >= 75 && val < 125)
+                    } else if (val >= 75 && val < 125)
                     {
                         color = BitmapDescriptorFactory.HUE_ORANGE;
-                    }
-                    else if (val >= 125)
+                    } else if (val >= 125)
                     {
                         color = BitmapDescriptorFactory.HUE_RED;
                     }
 
                     mMap.addMarker(new MarkerOptions().position(new LatLng(measure.latitude,
-                            measure.longitude)).title(measure.resultMeasure).icon(
+                            measure.longitude)).title("Poziom dzwięku: " + measure.resultMeasure + "dB").icon(
                             BitmapDescriptorFactory.defaultMarker(color)
                     ));
-                    Log.d(TAG, "Value is: " + measure.latitude + " " + measure.longitude);
                 }
             }
 
@@ -240,9 +218,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d(TAG, "Cant read");
             }
         });
-
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
@@ -376,6 +352,4 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e("Exception: %s", e.getMessage());
         }
     }
-
-
 }

@@ -1,31 +1,23 @@
 package com.soundmeterpl.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.soundmeterpl.R;
@@ -39,10 +31,8 @@ import com.soundmeterpl.utils.World;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.Locale;
 
-
-public class MeasureActivity extends Activity
+public class MeasureActivity extends AppCompatActivity
 {
     boolean refreshed = false;
     Meter meter;
@@ -65,7 +55,7 @@ public class MeasureActivity extends Activity
     private static final int MY_PERMISSION_RECORD_AUDIO = 1;
     private static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
 
-    private Button  buttonAbort;
+    private Button buttonAbort;
     private Button buttonAdd;
 
     private DatabaseReference databaseValue;
@@ -103,6 +93,7 @@ public class MeasureActivity extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_measure);
 
         databaseValue = FirebaseDatabase.getInstance().getReference("measure");
 
@@ -116,21 +107,6 @@ public class MeasureActivity extends Activity
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
         }
 
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(Color.TRANSPARENT);
-        }
-
-        setContentView(R.layout.activity_measure);
         tf = Typeface.createFromAsset(this.getAssets(), "fonts/Let_s go Digital Regular.ttf");
         minVal = (TextView) findViewById(R.id.minVal);
         minVal.setTypeface(tf);
@@ -308,7 +284,6 @@ public class MeasureActivity extends Activity
             Toast.makeText(this, "Measure added", Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(this, "Can't measure", Toast.LENGTH_LONG).show();
-
         }
     }
 }

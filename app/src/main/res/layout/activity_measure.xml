@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".activities.MeasureActivity">
 
+    <Button
+        android:id="@+id/add_bttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="164dp"
+        android:text="@string/activity_add"
+        app:layout_constraintBottom_toBottomOf="@+id/abort_bttn"
+        app:layout_constraintEnd_toStartOf="@+id/abort_bttn"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/abort_bttn"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
         android:id="@+id/curVal"
         android:layout_width="79dp"
@@ -30,39 +44,19 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/curVal" />
 
-    <TextView
-        android:id="@+id/minVal"
-        android:layout_width="79dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="76dp"
-        android:textAlignment="center"
+    <Button
+        android:id="@+id/abort_bttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/activity_abort"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/maxVal"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/minLabel"
-        android:layout_width="79dp"
-        android:layout_height="23dp"
-        android:text="@string/activity_minlabel"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/minVal"
-        app:layout_constraintEnd_toEndOf="@+id/minVal"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/minVal" />
-
-    <TextView
-        android:id="@+id/maxLabel"
-        android:layout_width="79dp"
-        android:layout_height="23dp"
-        android:text="@string/activity_maxlabel"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/maxVal"
-        app:layout_constraintEnd_toEndOf="@+id/maxVal"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/maxVal" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/add_bttn"
+        app:layout_constraintTop_toBottomOf="@+id/curVal"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/maxVal"
@@ -79,15 +73,56 @@
         app:layout_constraintTop_toBottomOf="@+id/minLabel" />
 
     <TextView
-        android:id="@+id/aveLabel"
+        android:id="@+id/minVal"
+        android:layout_width="79dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="76dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/maxVal"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.soundmeterpl.utils.Meter
+        android:id="@+id/speed"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="176dp"
+        android:background="@drawable/noise_disc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.978" />
+
+    <ImageButton
+        android:id="@+id/quest_bttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/question"
+        android:text="quest"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/maxLabel"
         android:layout_width="79dp"
         android:layout_height="23dp"
-        android:text="@string/activity_avglabel"
+        android:text="@string/activity_maxlabel"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/aveVal"
-        app:layout_constraintEnd_toEndOf="@+id/aveVal"
+        app:layout_constraintBottom_toTopOf="@+id/maxVal"
+        app:layout_constraintEnd_toEndOf="@+id/maxVal"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/aveVal" />
+        app:layout_constraintStart_toStartOf="@+id/maxVal" />
 
     <TextView
         android:id="@+id/aveVal"
@@ -103,22 +138,16 @@
         app:layout_constraintTop_toTopOf="@+id/maxVal"
         app:layout_constraintVertical_bias="0.0" />
 
-    <com.soundmeterpl.utils.Meter
-        android:id="@+id/speed"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/noise_disc"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.213" />
+    <TextView
+        android:id="@+id/aveLabel"
+        android:layout_width="79dp"
+        android:layout_height="23dp"
+        android:text="@string/activity_avglabel"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/aveVal"
+        app:layout_constraintEnd_toEndOf="@+id/aveVal"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/aveVal" />
 
     <ImageButton
         android:id="@+id/refresh_bttn"
@@ -132,44 +161,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/quest_bttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/question"
-        android:text="quest"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/add_bttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="164dp"
-        android:text="@string/activity_add"
-        app:layout_constraintBottom_toBottomOf="@+id/abort_bttn"
-        app:layout_constraintEnd_toStartOf="@+id/abort_bttn"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/abort_bttn"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/abort_bttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/activity_abort"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_bttn"
-        app:layout_constraintTop_toBottomOf="@+id/curVal"
-        app:layout_constraintVertical_bias="0.0" />
-
+    <TextView
+        android:id="@+id/minLabel"
+        android:layout_width="79dp"
+        android:layout_height="23dp"
+        android:text="@string/activity_minlabel"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/minVal"
+        app:layout_constraintEnd_toEndOf="@+id/minVal"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/minVal" />
 </android.support.constraint.ConstraintLayout>

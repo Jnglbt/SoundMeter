@@ -43,4 +43,5 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="@+id/ReminderTextLabel"
         app:layout_constraintTop_toBottomOf="@+id/ReminderTextLabel" />
+
 </android.support.constraint.ConstraintLayout>
