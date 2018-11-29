@@ -32,6 +32,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        getSupportActionBar().setTitle("Sign up");
 
         firebaseAuth = FirebaseAuth.getInstance();
 

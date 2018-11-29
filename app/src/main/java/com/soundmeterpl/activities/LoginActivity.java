@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().setTitle("Log in");
 
         hor = (LinearLayout) findViewById(R.id.hor_layout);
         vert = (LinearLayout) findViewById(R.id.vert_layout);
