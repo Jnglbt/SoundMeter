@@ -14,14 +14,14 @@
     <string name="default_info_snippet">Snippet</string>
     <string name="default_info_title">Title</string>
     <string name="pick_place">Pick place</string>
-    <string name="msg_switch_network">Włąć lokalizację</string>
+    <string name="msg_switch_network">Turn on GPS</string>
     <!-- MeasureActivity.java -->
-    <string name="activity_infobull">Komunikat</string>
-    <string name="activity_infotitle">Poziom dźwięku</string>
+    <string name="activity_infobull">Massage</string>
+    <string name="activity_infotitle">Sound level</string>
     <string name="activity_infobutton">Ok</string>
-    <string name="activity_recStartErr">Błąd słuchania</string>
+    <string name="activity_recStartErr">Unable to start recording</string>
     <string name="activity_recBusyErr">Recorder is busy or permission to record is prohibited</string>
-    <string name="activity_recFileErr">Nie można utworzyć plik</string>
+    <string name="activity_recFileErr">Unable to create file</string>
     <!-- activity_measure.xml -->
     <string name="activity_minlabel">Minimum</string>
     <string name="activity_avglabel">Average</string>
@@ -30,13 +30,13 @@
     <string name="activity_add">Add</string>
     <string name="activity_abort">Abort</string>
     <!-- dialog_info.xml -->
-    <string name="info_0db">0dB: Pełna cisza.</string>
-    <string name="info_30db">30dB: Kościoł, czytelnia.</string>
-    <string name="info_50db">50dB: Spokojna rozmowa.</string>
-    <string name="info_70db">70dB: Silnik samochodu z odłegłości 6m.</string>
-    <string name="info_90db">90dB: Świder pneumatyczny z odłegłości 2m.</string>
-    <string name="info_120db">120dB Karabin maszynowy z odłegłości 0.5m.</string>
-    <string name="info_150db">150dB: Hałas powodujący trwałe uszkodzenie słuchu.</string>
-    <string name="info_160db">160dB i wyżej: Hałas śmiertelny.</string>
+    <string name="info_0db">0dB: Hearing threshold.</string>
+    <string name="info_30db">30dB: Church, reading room.</string>
+    <string name="info_50db">50dB: Calm conversation.</string>
+    <string name="info_70db">70dB: Vacuum cleaner.</string>
+    <string name="info_90db">90dB: Drill.</string>
+    <string name="info_120db">120dB Clap of thunder.</string>
+    <string name="info_150db">150dB: Shot.</string>
+    <string name="info_160db">160dB and more: Death level.</string>
 
 </resources>
