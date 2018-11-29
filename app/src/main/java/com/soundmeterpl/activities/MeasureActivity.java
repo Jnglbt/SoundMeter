@@ -97,6 +97,7 @@ public class MeasureActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measure);
+        getSupportActionBar().setTitle("Measurment");
 
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 

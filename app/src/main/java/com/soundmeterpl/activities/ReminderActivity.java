@@ -31,6 +31,7 @@ public class ReminderActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder);
+        getSupportActionBar().setTitle("Reset password");
 
         ReminderEditText = (EditText) findViewById(R.id.ReminderTextLabel);
         ReminderButton = (Button) findViewById(R.id.ReminderButton);
