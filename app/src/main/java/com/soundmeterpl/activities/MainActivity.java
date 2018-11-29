@@ -88,20 +88,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        hor = findViewById(R.id.hor_layout);
+        vert = findViewById(R.id.vert_layout);
+        measureButton = findViewById(R.id.measureButton);
 
-        hor = (LinearLayout) findViewById(R.id.hor_layout);
-        vert = (LinearLayout) findViewById(R.id.vert_layout);
-        measureButton = (Button) findViewById(R.id.measureButton);
-
-        firebaseAuth = firebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
-            measureButton.setEnabled(false);
-            measureButton.setText("Turn on GPS");
-        }
 
         if (firebaseUser != null)
         {
@@ -128,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_maps);
         mapFragment.getMapAsync(this);
 
-        login = (Button) findViewById(R.id.login_bttn);
+        login = findViewById(R.id.login_bttn);
         login.setOnClickListener(new View.OnClickListener()
 
         {
@@ -139,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        signup = (Button) findViewById(R.id.signup_bttn);
+        signup = findViewById(R.id.signup_bttn);
         signup.setOnClickListener(new View.OnClickListener()
 
         {
@@ -150,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        buttonLogout = (TextView) findViewById(R.id.buttonLogout);
+        buttonLogout = findViewById(R.id.buttonLogout);
         buttonLogout.setOnClickListener(new View.OnClickListener()
 
         {
@@ -163,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        buttonMeasure = (Button) findViewById(R.id.measureButton);
+        buttonMeasure = findViewById(R.id.measureButton);
         buttonMeasure.setOnClickListener(new View.OnClickListener()
 
         {
@@ -206,7 +198,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     mMap.addMarker(new MarkerOptions().position(new LatLng(measure.latitude,
-                            measure.longitude)).title("Poziom dzwięku: " + measure.resultMeasure + "dB").icon(
+                            measure.longitude)).title("Sound level: " + measure.resultMeasure + "dB")
+                            .snippet("Date: " + measure.time).icon(
                             BitmapDescriptorFactory.defaultMarker(color)
                     ));
                 }

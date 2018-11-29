@@ -1,10 +1,12 @@
 package com.soundmeterpl.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
@@ -30,6 +32,7 @@ import com.soundmeterpl.utils.World;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class MeasureActivity extends AppCompatActivity
@@ -95,6 +98,9 @@ public class MeasureActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measure);
 
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
         databaseValue = FirebaseDatabase.getInstance().getReference("measure");
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
@@ -108,15 +114,15 @@ public class MeasureActivity extends AppCompatActivity
         }
 
         tf = Typeface.createFromAsset(this.getAssets(), "fonts/Let_s go Digital Regular.ttf");
-        minVal = (TextView) findViewById(R.id.minVal);
+        minVal = findViewById(R.id.minVal);
         minVal.setTypeface(tf);
-        aveVal = (TextView) findViewById(R.id.aveVal);
+        aveVal = findViewById(R.id.aveVal);
         aveVal.setTypeface(tf);
-        maxVal = (TextView) findViewById(R.id.maxVal);
+        maxVal = findViewById(R.id.maxVal);
         maxVal.setTypeface(tf);
-        curVal = (TextView) findViewById(R.id.curVal);
+        curVal = findViewById(R.id.curVal);
         curVal.setTypeface(tf);
-        infoButton = (ImageButton) findViewById(R.id.quest_bttn);
+        infoButton = findViewById(R.id.quest_bttn);
         infoButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -136,7 +142,7 @@ public class MeasureActivity extends AppCompatActivity
                 builder.create().show();
             }
         });
-        refreshButton = (ImageButton) findViewById(R.id.refresh_bttn);
+        refreshButton = findViewById(R.id.refresh_bttn);
         refreshButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -150,10 +156,10 @@ public class MeasureActivity extends AppCompatActivity
             }
         });
 
-        meter = (Meter) findViewById(R.id.speed);
+        meter = findViewById(R.id.speed);
         mRecorder = new MyMediaRecorder();
 
-        buttonAbort = (Button) findViewById(R.id.abort_bttn);
+        buttonAbort = findViewById(R.id.abort_bttn);
         buttonAbort.setOnClickListener(new View.OnClickListener()
 
         {
@@ -163,7 +169,14 @@ public class MeasureActivity extends AppCompatActivity
                 startActivity(new Intent(MeasureActivity.this, MainActivity.class));
             }
         });
-        buttonAdd = (Button) findViewById(R.id.add_bttn);
+        buttonAdd = findViewById(R.id.add_bttn);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
+            buttonAdd.setEnabled(false);
+            buttonAdd.setText("Turn on GPS");
+        }
+
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,16 +287,17 @@ public class MeasureActivity extends AppCompatActivity
         Bundle bundle = getIntent().getExtras();
         double latitude = bundle.getDouble("LATITUDE");
         double longitude = bundle.getDouble("LONGITUDE");
+        Date time = Calendar.getInstance().getTime();
 
         String measureString = curVal.getText().toString();
         String FinMeasureString = measureString.replace(',', '.');
         if(!TextUtils.isEmpty(measureString)){
             String id = databaseValue.push().getKey();
-            Measure measure = new Measure(id, FinMeasureString, longitude, latitude);
+            Measure measure = new Measure(id, FinMeasureString, longitude, latitude, time);
             databaseValue.child(id).setValue(measure);
-            Toast.makeText(this, "Pomiar dodano", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Measurment was added", Toast.LENGTH_LONG).show();
         }else {
-            Toast.makeText(this, "Nie mogę zmierzyć", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Unable to measure", Toast.LENGTH_LONG).show();
         }
     }
 }

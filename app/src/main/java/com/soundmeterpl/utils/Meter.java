@@ -20,7 +20,7 @@ public class Meter extends AppCompatImageView
     private Matrix mMatrix = new Matrix();
     private Bitmap indicatorBitmap;
     private Paint paint = new Paint();
-    static final long ANIMATION_INTERVAL = 20;
+    static final long ANIMATION_INTERVAL = 5;
 
     public Meter(Context context)
     {
@@ -44,7 +44,7 @@ public class Meter extends AppCompatImageView
         indicatorBitmap = Bitmap.createBitmap(myBitmap, 0, 0, bitmapWidth, bitmapHeight, mMatrix, true);
 
         paint = new Paint();
-        paint.setTextSize(44);
+        paint.setTextSize(80);
         paint.setTypeface(MeasureActivity.tf);
         paint.setAntiAlias(true);
         paint.setTextAlign(Paint.Align.CENTER);
