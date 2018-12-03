@@ -42,10 +42,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.maps.android.clustering.ClusterManager;
 import com.soundmeterpl.R;
 import com.soundmeterpl.utils.Measure;
-import com.soundmeterpl.utils.MyItem;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
@@ -80,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private DatabaseReference dbMeasureReference;
-
-    private ClusterManager<MyItem> mClusterManager;
 
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -187,16 +183,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    /*private void setUpClusterer() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), 10));
-
-        mClusterManager = new ClusterManager<MyItem>(this, mMap);
-
-        mMap.setOnCameraIdleListener(mClusterManager);
-        mMap.setOnMarkerClickListener(mClusterManager);
-
-        addMark();
-    }*/
 
     protected void addMark()
     {
@@ -230,9 +216,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .snippet("Date: " + measure.time).icon(
                                     BitmapDescriptorFactory.defaultMarker(color)
                             ));
-                    /*MyItem offsetItem = new MyItem(measure.latitude, measure.longitude, "Sound level: " + measure.resultMeasure + "dB",
-                            "Date: " + measure.time, color);
-                    mClusterManager.addItem(offsetItem);*/
                 }
             }
 
@@ -277,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLocationPermission();
         updateLocationUI();
         getDeviceLocation();
-        //setUpClusterer();
         addMark();
     }
 
