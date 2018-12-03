@@ -15,11 +15,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,8 +42,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.clustering.ClusterManager;
 import com.soundmeterpl.R;
 import com.soundmeterpl.utils.Measure;
+import com.soundmeterpl.utils.MyItem;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
@@ -75,10 +81,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseUser firebaseUser;
     private DatabaseReference dbMeasureReference;
 
+    private ClusterManager<MyItem> mClusterManager;
+
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 12.0f));
+            }
+
+            @Override
+            public void onError(Status status)
+            {
+
+            }
+        });
 
         hor = findViewById(R.id.hor_layout);
         vert = findViewById(R.id.vert_layout);
@@ -162,6 +187,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    /*private void setUpClusterer() {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), 10));
+
+        mClusterManager = new ClusterManager<MyItem>(this, mMap);
+
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+
+        addMark();
+    }*/
+
     protected void addMark()
     {
         dbMeasureReference = FirebaseDatabase.getInstance().getReference();
@@ -192,8 +228,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.addMarker(new MarkerOptions().position(new LatLng(measure.latitude,
                             measure.longitude)).title("Sound level: " + measure.resultMeasure + "dB")
                             .snippet("Date: " + measure.time).icon(
-                            BitmapDescriptorFactory.defaultMarker(color)
-                    ));
+                                    BitmapDescriptorFactory.defaultMarker(color)
+                            ));
+                    /*MyItem offsetItem = new MyItem(measure.latitude, measure.longitude, "Sound level: " + measure.resultMeasure + "dB",
+                            "Date: " + measure.time, color);
+                    mClusterManager.addItem(offsetItem);*/
                 }
             }
 
@@ -238,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLocationPermission();
         updateLocationUI();
         getDeviceLocation();
+        //setUpClusterer();
         addMark();
     }
 
