@@ -40,7 +40,7 @@
             style="@style/text_16_666666"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/cyan"
+            android:background="@color/mygreen"
             android:gravity="left|center"
             android:lineSpacingMultiplier="1.5"
             android:padding="5dp"

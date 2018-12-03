@@ -1,5 +1,6 @@
 package com.soundmeterpl.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -8,12 +9,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,6 +50,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.soundmeterpl.R;
+import com.soundmeterpl.utils.InfoDialog;
 import com.soundmeterpl.utils.Measure;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
@@ -78,6 +86,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private DatabaseReference dbMeasureReference;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.info:
+                InfoDialog.Builder builder = new InfoDialog.Builder(MainActivity.this);
+                builder.setMessage(getString(R.string.activity_infobull));
+                builder.setTitle(getString(R.string.activity_infotitle));
+                builder.setNegativeButton(getString(R.string.activity_infobutton),
+                        new android.content.DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.create().show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -132,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_maps);
         mapFragment.getMapAsync(this);
+
+
+
 
         login = findViewById(R.id.login_bttn);
         login.setOnClickListener(new View.OnClickListener()
