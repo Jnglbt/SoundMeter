@@ -1,6 +1,7 @@
 package com.soundmeterpl.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +15,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,33 +40,29 @@ import java.util.Date;
 
 public class MeasureActivity extends AppCompatActivity
 {
-    boolean refreshed = false;
-    Meter meter;
+    boolean isChart = false;
+    private boolean bListener = true;
+    private boolean isThreadRun = true;
     public static Typeface tf;
-    ImageButton infoButton;
-    ImageButton refreshButton;
+    private Thread thread;
+    private MyMediaRecorder mRecorder;
+    Meter meter;
     TextView minVal;
     TextView maxVal;
     TextView aveVal;
     TextView curVal;
+
     long currentTime = 0;
-    boolean isChart = false;
-    private boolean bListener = true;
-    private boolean isThreadRun = true;
-    private Thread thread;
     float volume = 10000;
     int refresh = 0;
-    private MyMediaRecorder mRecorder;
 
     private static final int MY_PERMISSION_RECORD_AUDIO = 1;
     private static final int MY_PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
 
-    private Button buttonAbort;
-    private Button buttonAdd;
-
     private DatabaseReference databaseValue;
 
 
+    @SuppressLint("HandlerLeak")
     final Handler handler = new Handler()
     {
         @Override
@@ -93,42 +92,18 @@ public class MeasureActivity extends AppCompatActivity
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public boolean onCreateOptionsMenu(Menu menu)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_measure);
-        getSupportActionBar().setTitle("Measurment");
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
 
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-
-        databaseValue = FirebaseDatabase.getInstance().getReference("measure");
-
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSION_RECORD_AUDIO);
-        }
-
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
-        }
-
-        tf = Typeface.createFromAsset(this.getAssets(), "fonts/Let_s go Digital Regular.ttf");
-        minVal = findViewById(R.id.minVal);
-        minVal.setTypeface(tf);
-        aveVal = findViewById(R.id.aveVal);
-        aveVal.setTypeface(tf);
-        maxVal = findViewById(R.id.maxVal);
-        maxVal.setTypeface(tf);
-        curVal = findViewById(R.id.curVal);
-        curVal.setTypeface(tf);
-        infoButton = findViewById(R.id.quest_bttn);
-        infoButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.info:
                 InfoDialog.Builder builder = new InfoDialog.Builder(MeasureActivity.this);
                 builder.setMessage(getString(R.string.activity_infobull));
                 builder.setTitle(getString(R.string.activity_infotitle));
@@ -141,26 +116,50 @@ public class MeasureActivity extends AppCompatActivity
                             }
                         });
                 builder.create().show();
-            }
-        });
-        refreshButton = findViewById(R.id.refresh_bttn);
-        refreshButton.setOnClickListener(new View.OnClickListener()
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_measure);
+        getSupportActionBar().setTitle("Measurment");
+
+        databaseValue = FirebaseDatabase.getInstance().getReference("measure");
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED)
         {
-            @Override
-            public void onClick(View view)
-            {
-                refreshed = true;
-                World.minDB = 100;
-                World.dbCount = 0;
-                World.lastDbCount = 0;
-                World.maxDB = 0;
-            }
-        });
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                    MY_PERMISSION_RECORD_AUDIO);
+        }
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSION_WRITE_EXTERNAL_STORAGE);
+        }
+
+        tf = Typeface.createFromAsset(this.getAssets(), "fonts/Let_s go Digital Regular.ttf");
+        minVal = findViewById(R.id.minVal);
+        minVal.setTypeface(tf);
+        aveVal = findViewById(R.id.aveVal);
+        aveVal.setTypeface(tf);
+        maxVal = findViewById(R.id.maxVal);
+        maxVal.setTypeface(tf);
+        curVal = findViewById(R.id.curVal);
+        curVal.setTypeface(tf);
 
         meter = findViewById(R.id.speed);
         mRecorder = new MyMediaRecorder();
 
-        buttonAbort = findViewById(R.id.abort_bttn);
+        Button buttonAbort = findViewById(R.id.abort_bttn);
         buttonAbort.setOnClickListener(new View.OnClickListener()
 
         {
@@ -170,8 +169,9 @@ public class MeasureActivity extends AppCompatActivity
                 startActivity(new Intent(MeasureActivity.this, MainActivity.class));
             }
         });
-        buttonAdd = findViewById(R.id.add_bttn);
 
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Button buttonAdd = findViewById(R.id.add_bttn);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
         {
             buttonAdd.setEnabled(false);
@@ -204,16 +204,10 @@ public class MeasureActivity extends AppCompatActivity
                             if (volume > 0)
                             {
                                 World.setDbCount(20 * (float) (Math.log10(volume)));
-                                //World.setDbCount(volume);
                                 Message message = new Message();
                                 message.what = 1;
                                 handler.sendMessage(message);
                             }
-                        }
-                        if (refreshed)
-                        {
-                            Thread.sleep(1200);
-                            refreshed = false;
                         } else
                         {
                             Thread.sleep(200);
