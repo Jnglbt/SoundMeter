@@ -36,11 +36,11 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        Email = (EditText) findViewById(R.id.Email);
-        Password = (EditText) findViewById(R.id.passwordLogin);
-        RePassword = (EditText) findViewById(R.id.RePassword);
+        Email = findViewById(R.id.Email);
+        Password = findViewById(R.id.passwordLogin);
+        RePassword = findViewById(R.id.RePassword);
 
-        btn_signup = (Button) findViewById(R.id.btn_signup);
+        btn_signup = findViewById(R.id.btn_signup);
         btn_signup.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
     }
@@ -82,14 +82,17 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(SignupActivity.this, "Registration complete", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this,
+                                    "Registration complete", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent( SignupActivity.this, LoginActivity.class));
 
                         }else{
                             if (task.getException() instanceof FirebaseApiNotAvailableException)
-                                Toast.makeText(SignupActivity.this, "You are already registered", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this,
+                                        "You are already registered", Toast.LENGTH_SHORT).show();
                             else
-                                Toast.makeText(SignupActivity.this, "Could not registered", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this,
+                                        "Could not registered", Toast.LENGTH_SHORT).show();
                         }
                         progressDialog.hide();
                     }

@@ -284,7 +284,7 @@ public class MeasureActivity extends AppCompatActivity
         double longitude = bundle.getDouble("LONGITUDE");
         Date time = Calendar.getInstance().getTime();
 
-        String measureString = curVal.getText().toString();
+        String measureString = aveVal.getText().toString();
         String FinMeasureString = measureString.replace(',', '.');
         if(!TextUtils.isEmpty(measureString)){
             String id = databaseValue.push().getKey();
