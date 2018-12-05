@@ -33,8 +33,8 @@ public class ReminderActivity extends AppCompatActivity
         setContentView(R.layout.activity_reminder);
         getSupportActionBar().setTitle("Reset password");
 
-        ReminderEditText = (EditText) findViewById(R.id.ReminderTextLabel);
-        ReminderButton = (Button) findViewById(R.id.ReminderButton);
+        ReminderEditText = findViewById(R.id.ReminderTextLabel);
+        ReminderButton = findViewById(R.id.ReminderButton);
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
 
@@ -55,9 +55,11 @@ public class ReminderActivity extends AppCompatActivity
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(ReminderActivity.this, "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ReminderActivity.this,
+                                            "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(ReminderActivity.this, "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ReminderActivity.this,
+                                            "Failed to send reset email!", Toast.LENGTH_SHORT).show();
                                 }
                                 progressDialog.hide();
                                 startActivity(new Intent( ReminderActivity.this, LoginActivity.class));
