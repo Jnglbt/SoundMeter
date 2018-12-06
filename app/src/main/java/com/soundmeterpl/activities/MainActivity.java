@@ -9,18 +9,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -53,6 +50,7 @@ import com.soundmeterpl.R;
 import com.soundmeterpl.utils.InfoDialog;
 import com.soundmeterpl.utils.Measure;
 
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
     private TextView buttonLogout;
@@ -68,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PlaceDetectionClient mPlaceDetectionClient;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private CameraPosition mCameraPosition;
-
     private Location mLastKnownLocation;
+
     private double latitude;
     private double longitude;
     private float color = BitmapDescriptorFactory.HUE_CYAN;
@@ -86,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private DatabaseReference dbMeasureReference;
+
+
+    int i = 0;
+    int count = 0;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -165,16 +168,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         mGeoDataClient = Places.getGeoDataClient(this, null);
-
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_maps);
         mapFragment.getMapAsync(this);
-
-
-
 
         login = findViewById(R.id.login_bttn);
         login.setOnClickListener(new View.OnClickListener()
@@ -218,10 +216,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(MainActivity.this, MeasureActivity.class);
-                intent.putExtra("LATITUDE", latitude);
-                intent.putExtra("LONGITUDE", longitude);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, MeasureActivity.class);
+                //intent.putExtra("LATITUDE", latitude);
+                //intent.putExtra("LONGITUDE", longitude);
+                //startActivity(intent);
+                startActivity(new Intent(MainActivity.this, MeasureActivity.class));
             }
         });
     }
@@ -235,6 +234,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren())
+                {
+                    count++;
+                }
+
+                Marker marker[] = new Marker[count];
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren())
                 {
                     Measure measure = childSnapshot.getValue(Measure.class);
@@ -254,12 +259,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         color = BitmapDescriptorFactory.HUE_RED;
                     }
 
-                    mMap.addMarker(new MarkerOptions().position(new LatLng(measure.latitude,
+                    marker[i] = mMap.addMarker(new MarkerOptions().position(new LatLng(measure.latitude,
                             measure.longitude)).title("Sound level: " + measure.resultMeasure + "dB")
                             .snippet("Date: " + measure.time).icon(
                                     BitmapDescriptorFactory.defaultMarker(color)
                             ));
+                    i++;
                 }
+
+                for (int j = 0; j < count-1; j++)
+                {
+                    double title1 = Double.parseDouble(marker[j].getTitle().substring(13, 17));
+                    double title2 = Double.parseDouble(marker[j+1].getTitle().substring(13, 17));
+
+                    if (CalculationByDistance(marker[j].getPosition(), marker[j+1].getPosition()) <= 10)
+                    {
+                        marker[j].setTitle("Sound level: " + (title1 + title2) / 2 + "dB");
+                        marker[j+1].remove();
+                    }
+                }
+
             }
 
             @Override
@@ -268,6 +287,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d(TAG, "Cant read");
             }
         });
+
+    }
+
+    public double CalculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double meter = valueResult * 1000;
+        return meter;
     }
 
     @Override
@@ -300,10 +338,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        addMark();
         getLocationPermission();
         updateLocationUI();
         getDeviceLocation();
-        addMark();
     }
 
     private void getLocationPermission()
