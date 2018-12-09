@@ -7,14 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +26,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.soundmeterpl.R;
@@ -61,6 +78,19 @@ public class MeasureActivity extends AppCompatActivity
 
     private DatabaseReference databaseValue;
 
+    private GoogleMap mMap;
+    private GeoDataClient mGeoDataClient;
+    private PlaceDetectionClient mPlaceDetectionClient;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLastKnownLocation;
+
+    private double latitude;
+    private double longitude;
+
+    private boolean mLocationPermissionGranted;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @SuppressLint("HandlerLeak")
     final Handler handler = new Handler()
@@ -130,6 +160,13 @@ public class MeasureActivity extends AppCompatActivity
         setContentView(R.layout.activity_measure);
         getSupportActionBar().setTitle("Measurment");
 
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        getLocationPermission();
+        getDeviceLocation();
+
         databaseValue = FirebaseDatabase.getInstance().getReference("measure");
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
@@ -185,6 +222,53 @@ public class MeasureActivity extends AppCompatActivity
                 startActivity(new Intent(MeasureActivity.this, MainActivity.class));
             }
         });
+    }
+
+    private void getLocationPermission()
+    {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+        {
+            mLocationPermissionGranted = true;
+        } else
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    private void getDeviceLocation()
+    {
+        try
+        {
+            if (mLocationPermissionGranted)
+            {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task)
+                    {
+                        if (task.isSuccessful() && task.getResult() != null)
+                        {
+                            mLastKnownLocation = task.getResult();
+                            latitude = mLastKnownLocation.getLatitude();
+                            longitude = mLastKnownLocation.getLongitude();
+                        } else
+                        {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e)
+        {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 
     private void startListenAudio()
@@ -279,9 +363,9 @@ public class MeasureActivity extends AppCompatActivity
         super.onDestroy();
     }
     private void AddValue(){
-        Bundle bundle = getIntent().getExtras();
-        double latitude = bundle.getDouble("LATITUDE");
-        double longitude = bundle.getDouble("LONGITUDE");
+        //Bundle bundle = getIntent().getExtras();
+        //double latitude = bundle.getDouble("LATITUDE");
+        //double longitude = bundle.getDouble("LONGITUDE");
         Date time = Calendar.getInstance().getTime();
 
         String measureString = aveVal.getText().toString();
